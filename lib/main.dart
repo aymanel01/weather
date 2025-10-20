@@ -92,55 +92,60 @@ class WeatherList extends StatelessWidget {
       return const Center(child: Text('Aucune donnée météo disponible'));
     }
 
-    return ListView.builder(
-      itemCount: weatherData.length,
-      itemBuilder: (context, index) {
-        final data = weatherData[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${data.time.day}/${data.time.month}/${data.time.year} ${data.time.hour}:${data.time.minute.toString().padLeft(2, '0')}',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildWeatherItem(
-                      context,
-                      Icons.thermostat,
-                      'Température',
-                      '${data.temperature.toStringAsFixed(1)}°C',
-                      Colors.orange,
-                    ),
-                    _buildWeatherItem(
-                      context,
-                      Icons.thermostat_outlined,
-                      'Ressenti',
-                      '${data.apparentTemperature.toStringAsFixed(1)}°C',
-                      Colors.blue,
-                    ),
-                    _buildWeatherItem(
-                      context,
-                      Icons.air,
-                      'Vent',
-                      '${data.windSpeed.toStringAsFixed(1)} km/h',
-                      Colors.green,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<WeatherBloc>().add(LoadWeatherData());
       },
+      child: ListView.builder(
+        itemCount: weatherData.length,
+        itemBuilder: (context, index) {
+          final data = weatherData[index];
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${data.time.day}/${data.time.month}/${data.time.year} ${data.time.hour}:${data.time.minute.toString().padLeft(2, '0')}',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildWeatherItem(
+                        context,
+                        Icons.thermostat,
+                        'Température',
+                        '${data.temperature.toStringAsFixed(1)}°C',
+                        Colors.orange,
+                      ),
+                      _buildWeatherItem(
+                        context,
+                        Icons.thermostat_outlined,
+                        'Ressenti',
+                        '${data.apparentTemperature.toStringAsFixed(1)}°C',
+                        Colors.blue,
+                      ),
+                      _buildWeatherItem(
+                        context,
+                        Icons.air,
+                        'Vent',
+                        '${data.windSpeed.toStringAsFixed(1)} km/h',
+                        Colors.green,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
