@@ -15,11 +15,12 @@ class WeatherPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Données Météo'),
+        title: const Text('Données Météo'), // Weather data in French
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
+              // Trigger a refresh when user taps the refresh button
               context.read<WeatherBloc>().add(
                 const WeatherEvent.refreshWeatherData(),
               );
@@ -30,13 +31,15 @@ class WeatherPage extends StatelessWidget {
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           return state.when(
-            initial: () => const WeatherLoading(),
-            loading: () => const WeatherLoading(),
-            loaded: (weatherData) => WeatherList(weatherData: weatherData),
+            initial: () => const WeatherLoading(), // Show loading on first load
+            loading: () =>
+                const WeatherLoading(), // Show loading during refresh
+            loaded: (weatherData) =>
+                WeatherList(weatherData: weatherData), // Show the data
             error: (message) => WeatherError(
               message: message,
               onRetry: () => context.read<WeatherBloc>().add(
-                const WeatherEvent.refreshWeatherData(),
+                const WeatherEvent.refreshWeatherData(), // Retry on error
               ),
             ),
           );

@@ -20,11 +20,12 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   @override
   Future<List<WeatherModel>> getWeatherData() async {
     try {
+      // Try to fetch from the real API first
       final response = await dio.get(
         '$baseUrl/weather',
         options: Options(
           headers: {'Content-Type': 'application/json'},
-          receiveTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10), // Give it 10 seconds
           sendTimeout: const Duration(seconds: 10),
         ),
       );
@@ -32,10 +33,11 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
       if (response.statusCode == 200) {
         return _parseWeatherData(response.data);
       } else {
-        throw Exception('Failed to load weather data: ${response.statusCode}');
+        throw Exception('API returned ${response.statusCode}');
       }
     } catch (e) {
-      // Fallback to mock data when API is not available
+      // If API fails, use mock data instead
+      print('API failed, using mock data: $e');
       return await mockDataSource.getWeatherData();
     }
   }

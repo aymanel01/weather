@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/weather_entity.dart';
 import '../pages/weather_detail_page.dart';
 
+// A card widget that displays weather information
 class WeatherCard extends StatelessWidget {
   final WeatherEntity weatherData;
 
